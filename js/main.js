@@ -205,35 +205,47 @@
       }
     }
 
-    // Кадри вантажимо послідовно (в порядку відтворення) — так перші
-    // (найпотрібніші одразу після завантаження сторінки) кадри готові
-    // найшвидше. Canvas "переймає" естафету від poster-картинки, щойно
-    // перший кадр завантажився — до того просто видно <img data-hero-poster>.
+    // Кадри вантажимо в порядку відтворення, але ПАРАЛЕЛЬНО (пул із кількох
+    // "воркерів", а не один запит за раз) — інакше на реальному з'єднанні з
+    // помітною затримкою (не localhost) 192 послідовні запити (кожен чекає
+    // завершення попереднього) складаються у дуже довге очікування першого
+    // показу відео. З пулом воркерів одночасно летить кілька запитів, і
+    // браузер/CDN природно мультиплексують їх через HTTP/2.
+    // Canvas "переймає" естафету від poster-картинки, щойно перший кадр
+    // завантажився — до того просто видно <img data-hero-poster>.
     function preloadFrames() {
-      let i = 0;
-      function loadNext() {
-        if (i >= FRAME_COUNT) return;
-        const idx = i;
-        const img = new Image();
-        img.decoding = "async";
-        img.onload = () => {
-          images[idx] = img;
-          if (idx === targetIndex || (idx < targetIndex && drawnIndex < idx)) {
-            drawClosestAvailable();
-          }
-          if (idx === 0 && poster) {
-            poster.style.visibility = "hidden"; // canvas вже показує той самий перший кадр
-          }
-          i++;
-          loadNext();
-        };
-        img.onerror = () => {
-          i++;
-          loadNext();
-        };
-        img.src = FRAME_PATH(idx + 1);
+      const CONCURRENCY = 8;
+      let nextIndex = 0;
+
+      function loadOne(idx) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.decoding = "async";
+          img.onload = () => {
+            images[idx] = img;
+            if (idx === targetIndex || (idx < targetIndex && drawnIndex < idx)) {
+              drawClosestAvailable();
+            }
+            if (idx === 0 && poster) {
+              poster.style.visibility = "hidden"; // canvas вже показує той самий перший кадр
+            }
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = FRAME_PATH(idx + 1);
+        });
       }
-      loadNext();
+
+      async function worker() {
+        while (nextIndex < FRAME_COUNT) {
+          const idx = nextIndex++;
+          await loadOne(idx);
+        }
+      }
+
+      for (let w = 0; w < CONCURRENCY; w++) {
+        worker();
+      }
     }
 
     resizeCanvas();
