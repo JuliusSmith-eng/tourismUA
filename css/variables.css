@@ -1,0 +1,131 @@
+/* =========================================================
+   variables.css — единая точка настройки внешнего вида.
+   Тема (light/dark) переключается атрибутом data-theme на <html>.
+   Поменяв значения тут, меняешь весь сайт целиком.
+
+   Палитра "10 Shades of Ocean" (от тёмного к светлому):
+     1. Midnight Abyss    #050e1c
+     2. Deep Indigo       #0a1f3d
+     3. Cobalt Swell      #0b3161
+     4. Sapphire Current  #0d4a8c
+     5. Azurite Tide      #0f6ea3
+     6. Turquoise Crest   #128fac
+     7. Cyan Shallows     #17b1c9
+     8. Aqua Mist         #6cc9d3
+     9. Coral Reef Blue   #a3dce2
+    10. Foam White        #e4f6f7
+   ========================================================= */
+
+:root {
+  /* --- Всі 10 відтінків палітри (від темного до світлого) --- */
+  --ocean-1: #050e1c;   /* Midnight Abyss */
+  --ocean-2: #0a1f3d;   /* Deep Indigo */
+  --ocean-3: #0b3161;   /* Cobalt Swell */
+  --ocean-4: #0d4a8c;   /* Sapphire Current */
+  --ocean-5: #0f6ea3;   /* Azurite Tide */
+  --ocean-6: #128fac;   /* Turquoise Crest */
+  --ocean-7: #17b1c9;   /* Cyan Shallows */
+  --ocean-8: #6cc9d3;   /* Aqua Mist */
+  --ocean-9: #a3dce2;   /* Coral Reef Blue */
+  --ocean-10: #e4f6f7;  /* Foam White */
+
+  /* --- Бренд / акценти (спільні для обох тем) ---
+     accent-1/2 навмисно взяті з середини палітри (Turquoise Crest,
+     Azurite Tide) — це єдині відтінки, які лишаються достатньо
+     контрастними і на світлих, і на темних поверхнях сайту. */
+  --accent-1: var(--ocean-6);   /* Turquoise Crest — основний акцент, кнопки, таймер */
+  --accent-2: var(--ocean-5);   /* Azurite Tide — вторинний акцент (hover-стани) */
+  --accent-3: var(--ocean-3);   /* Cobalt Swell — третій акцент, темні поверхні, фокус */
+  --accent-ice: var(--ocean-10); /* Foam White — фон/підкладки */
+
+  --gradient-brand: linear-gradient(135deg, var(--ocean-3) 0%, var(--ocean-4) 50%, var(--ocean-6) 100%);
+  --gradient-brand-soft: linear-gradient(135deg, rgba(11,49,97,0.14) 0%, rgba(13,74,140,0.14) 50%, rgba(18,143,172,0.14) 100%);
+
+  /* Статусні кольори (успіх/помилка/попередження) лишили функціональними,
+     поза океан-палітрою — зелений/червоний тут несуть сенс (успіх/помилка),
+     заміна на відтінки синього зробила б їх нечитабельними як індикатори. */
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  /* --- Типографика --- */
+  --font-main: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+
+  /* --- Скругления / тени / переходы --- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 2px 8px rgba(5, 14, 28, 0.08);
+  --shadow-md: 0 8px 24px rgba(5, 14, 28, 0.12);
+  --shadow-lg: 0 20px 48px rgba(5, 14, 28, 0.18);
+  --shadow-glow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 40px rgba(15,110,163,0.25);
+
+  --transition-fast: 150ms cubic-bezier(.4,0,.2,1);
+  --transition-base: 280ms cubic-bezier(.4,0,.2,1);
+  --transition-slow: 500ms cubic-bezier(.4,0,.2,1);
+
+  /* --- Контейнер --- */
+  --container-max: 1200px;
+  --gap-xs: 8px;
+  --gap-sm: 16px;
+  --gap-md: 24px;
+  --gap-lg: 40px;
+  --gap-xl: 64px;
+
+  --header-height: 72px;
+
+  /* Свічення іконок сонця/місяця в перемикачі теми лишили як є: місяць і так
+     у відтінку океану (близько до --ocean-8), а сонце навмисно тепле —
+     це колір самого світила, а не бренд-акцент. */
+  --glow-moon: #8fe3f5;
+  --glow-sun: #ffcf6b;
+}
+
+/* ===== Светлая тема (по умолчанию) ===== */
+:root,
+:root[data-theme="light"] {
+  --bg-body: var(--ocean-10);      /* Foam White */
+  --bg-surface: #ffffff;
+  --bg-surface-alt: #dbeef2;       /* світлий відтінок Coral Reef Blue */
+  --bg-elevated: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.80);
+
+  --text-primary: var(--ocean-1);   /* Midnight Abyss */
+  --text-secondary: var(--ocean-3); /* Cobalt Swell */
+  --text-muted: #5c8499;            /* приглушений Azurite Tide */
+  --text-on-accent: #ffffff;
+
+  --border-color: rgba(5, 14, 28, 0.10);
+  --border-color-strong: rgba(5, 14, 28, 0.18);
+
+  --overlay-bg: rgba(5, 14, 28, 0.55);
+  --skeleton-bg: #dbeef2;
+
+  /* Світіння navbar-кнопки при наведенні — тепер у Turquoise Crest замість оранжу */
+  --nav-glow: 0 6px 16px rgba(18, 143, 172, 0.28), 0 0 22px rgba(18, 143, 172, 0.20);
+}
+
+/* ===== Тёмная тема ===== */
+:root[data-theme="dark"] {
+  --bg-body: var(--ocean-1);        /* Midnight Abyss */
+  --bg-surface: var(--ocean-2);     /* Deep Indigo */
+  --bg-surface-alt: var(--ocean-3); /* Cobalt Swell */
+  --bg-elevated: var(--ocean-3);
+  --bg-header: rgba(5, 14, 28, 0.78);
+
+  --text-primary: var(--ocean-10);  /* Foam White */
+  --text-secondary: var(--ocean-9); /* Coral Reef Blue */
+  --text-muted: #7fa8ba;            /* приглушений Aqua Mist */
+  --text-on-accent: #ffffff;
+
+  --border-color: rgba(228, 246, 247, 0.10);
+  --border-color-strong: rgba(228, 246, 247, 0.18);
+
+  --overlay-bg: rgba(3, 9, 17, 0.7);
+  --skeleton-bg: var(--ocean-3);
+
+  --nav-glow: 0 6px 18px rgba(23, 177, 201, 0.40), 0 0 28px rgba(23, 177, 201, 0.30);
+}

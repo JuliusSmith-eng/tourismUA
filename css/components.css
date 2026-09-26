@@ -1,0 +1,713 @@
+/* =========================================================
+   components.css — переиспользуемые UI-блоки
+   ========================================================= */
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  background: var(--gradient-brand);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.btn--primary:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color-strong);
+}
+
+.btn--ghost:hover {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Icon buttons (theme/lang toggles) ---------- */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.icon-btn:hover {
+  border-color: var(--accent-2);
+  transform: translateY(-1px);
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- Theme toggle: овальний перемикач зі свічечкою іконкою ---------- */
+.theme-toggle {
+  position: relative;
+  width: 56px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.theme-toggle__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  background: var(--glow-moon);
+  filter: blur(9px);
+  opacity: 0.45;
+  transform: scale(1);
+  animation: theme-glow-pulse 3s ease-in-out infinite;
+  transition: background var(--transition-base), opacity var(--transition-base);
+  pointer-events: none;
+}
+
+:root[data-theme="light"] .theme-toggle .theme-toggle__glow {
+  background: var(--glow-sun);
+  opacity: 0.4;
+}
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  display: block;
+  opacity: 0;
+  transform: scale(0.35) rotate(-100deg);
+  transition: opacity var(--transition-base), transform var(--transition-base), filter var(--transition-base);
+}
+
+:root[data-theme="light"] .theme-toggle .icon-moon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  color: var(--glow-moon);
+  filter: drop-shadow(0 0 3px var(--glow-moon)) drop-shadow(0 0 8px var(--glow-moon));
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-sun {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  color: var(--glow-sun);
+  filter: drop-shadow(0 0 3px var(--glow-sun)) drop-shadow(0 0 8px var(--glow-sun));
+}
+
+.theme-toggle:hover .icon-sun,
+.theme-toggle:hover .icon-moon {
+  transform: scale(1.12) rotate(0deg);
+}
+
+/* Mobile hamburger icon morph */
+.nav-toggle .icon-burger,
+.nav-toggle .icon-close {
+  display: none;
+}
+.nav-toggle .icon-burger { display: block; }
+.nav-toggle[aria-expanded="true"] .icon-burger { display: none; }
+.nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+/* Language switcher */
+.lang-switch {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  gap: 2px;
+}
+
+.lang-switch__btn {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.lang-switch__btn[aria-pressed="true"] {
+  background: var(--gradient-brand);
+  color: #fff;
+}
+
+/* ---------- Excursion Card ---------- */
+.excursion-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.excursion-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.excursion-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--skeleton-bg);
+}
+
+.excursion-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.excursion-card:hover .excursion-card__media img {
+  transform: scale(1.06);
+}
+
+.excursion-card__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(5, 14, 28, 0.6);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.excursion-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--gap-sm);
+  flex: 1;
+}
+
+.excursion-card__title {
+  font-size: 1.15rem;
+}
+
+.excursion-card__desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.excursion-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.excursion-card__footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- Countdown timer ---------- */
+.countdown {
+  display: flex;
+  gap: 6px;
+}
+
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+}
+
+.countdown__value {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+  color: var(--accent-1);
+}
+
+.countdown__label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.countdown--expired .countdown__value {
+  color: var(--text-muted);
+}
+
+/* ---------- Spots left indicator ---------- */
+.spots-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.spots-left__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+}
+
+.spots-left--low .spots-left__dot { background: var(--warning); }
+.spots-left--low { color: var(--warning); }
+.spots-left--out .spots-left__dot { background: var(--danger); }
+.spots-left--out { color: var(--danger); }
+
+.spots-bar {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-alt);
+  overflow: hidden;
+}
+
+.spots-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  transition: width var(--transition-slow);
+}
+
+/* ---------- Sold-out / expired placeholder ---------- */
+.excursion-card--closed .excursion-card__media {
+  filter: grayscale(0.5) brightness(0.75);
+}
+
+.closed-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: var(--gap-sm);
+  background: linear-gradient(180deg, rgba(5,14,28,0.15) 0%, rgba(5,14,28,0.72) 100%);
+  color: #fff;
+}
+
+.closed-overlay__title {
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.closed-overlay__badge {
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Full standalone placeholder page/section for a single closed excursion */
+.closed-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-md);
+  text-align: center;
+  padding: var(--gap-xl) var(--gap-sm);
+}
+
+.closed-page__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gradient-brand-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.closed-page__carousel {
+  width: 100%;
+  max-width: 720px;
+}
+
+/* ---------- Gallery: інші фото активної категорії ---------- */
+.gallery-subgrid__item {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: zoom-in;
+  aspect-ratio: 1;
+  background: var(--skeleton-bg);
+  min-width: 0;
+  min-height: 0;
+}
+
+.gallery-subgrid__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.gallery-subgrid__item:hover img {
+  transform: scale(1.08);
+}
+
+/* ---------- Lightbox / mini-carousel ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(4px);
+  padding: var(--gap-sm);
+}
+
+.lightbox[data-open="true"] {
+  display: flex;
+}
+
+.lightbox__frame {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+}
+
+.lightbox__img {
+  width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+
+.lightbox__close,
+.lightbox__prev,
+.lightbox__next {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(6px);
+}
+
+.lightbox__close { top: -18px; right: -18px; }
+.lightbox__prev { left: -10px; top: 50%; transform: translateY(-50%); }
+.lightbox__next { right: -10px; top: 50%; transform: translateY(-50%); }
+
+@media (max-width: 640px) {
+  .lightbox__close { top: 8px; right: 8px; }
+  .lightbox__prev { left: 8px; top: 50%; }
+  .lightbox__next { right: 8px; top: 50%; }
+}
+
+/* Mini carousel (used inside closed-page) */
+.mini-carousel {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  background: var(--skeleton-bg);
+}
+
+.mini-carousel__track {
+  display: flex;
+  height: 100%;
+  transition: transform var(--transition-slow);
+}
+
+.mini-carousel__track img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mini-carousel__dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.mini-carousel__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+}
+
+.mini-carousel__dot[aria-current="true"] {
+  background: #fff;
+  width: 20px;
+  border-radius: var(--radius-pill);
+  transition: width var(--transition-fast);
+}
+
+/* ---------- Modal / registration form ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--overlay-bg);
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay[data-open="true"] {
+  display: flex;
+}
+
+@media (min-width: 640px) {
+  .modal-overlay {
+    align-items: center;
+  }
+}
+
+.modal {
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: var(--gap-md);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (min-width: 640px) {
+  .modal {
+    border-radius: var(--radius-lg);
+  }
+}
+
+.modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-sm);
+}
+
+.modal__close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-surface-alt);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--gap-sm);
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.form-field input,
+.form-field textarea {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color-strong);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(15,110,163,0.15);
+  outline: none;
+}
+
+.form-field--error input {
+  border-color: var(--danger);
+}
+
+.form-field__error {
+  font-size: 0.78rem;
+  color: var(--danger);
+  display: none;
+}
+
+.form-field--error .form-field__error {
+  display: block;
+}
+
+.form-status {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: var(--gap-sm);
+}
+
+.form-status[data-visible="true"] {
+  display: flex;
+}
+
+.form-status--success {
+  background: rgba(34,197,94,0.12);
+  color: var(--success);
+}
+
+.form-status--error {
+  background: rgba(239,68,68,0.12);
+  color: var(--danger);
+}
+
+/* ---------- Успіх форми: текст + прев'ю "повідомлення в Telegram" ---------- */
+/* Це статична демо-версія без бекенду (js/form.js) — після "відправки"
+   показуємо, як повідомлення виглядало б у Telegram-боті власника в
+   продакшн-версії, замість реального мережевого запиту. */
+.form-success {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.form-success__text {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(34,197,94,0.12);
+  color: var(--success);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.telegram-preview__label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.telegram-preview__bubble {
+  position: relative;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm) var(--radius-sm) var(--radius-sm) 4px;
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---------- Badges / tags ---------- */
+.tag {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-alt);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  z-index: 1200;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  padding: 14px 22px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-lg);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: transform var(--transition-base);
+}
+
+.toast[data-visible="true"] {
+  transform: translateX(-50%) translateY(0);
+}

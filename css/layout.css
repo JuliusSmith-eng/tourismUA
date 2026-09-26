@@ -1,0 +1,892 @@
+/* =========================================================
+   layout.css — сетка страницы, шапка, секции, адаптив
+   Mobile-first: базовые стили — под телефон, media(min-width) — расширяют
+   ========================================================= */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gap-sm);
+}
+
+@media (min-width: 640px) {
+  .container { padding-inline: var(--gap-md); }
+}
+
+/* ---------- Header ---------- */
+/* Шапка наложена поверх hero-блока (position: absolute), а не стоит
+   отдельной полосой над ним — иначе на стыке шапки и hero виден шов:
+   у шапки был фон body, а у hero сразу начинался градиентный блик,
+   и граница между ними бросалась в глаза. Наложением шапка буквально
+   "парит" над одним и тем же фоном без видимой границы. Компенсация
+   высоты — в padding-top у .hero (ниже). Не sticky: с прозрачным
+   фоном "прилипающая" шапка наезжала бы на текст карточek при скролле. */
+.site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  width: 100%;
+}
+
+/* Шапка завжди лежить поверх фото-hero (нижче), тому текст у ній завжди
+   світлий — незалежно від теми сайту. Кнопки (icon-btn) лишаються
+   тематичними: їхній власний фон і так читається на фото. */
+.site-header,
+.site-header .brand,
+.site-header .nav-link {
+  color: #fff;
+}
+
+.site-header .brand__name span {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Единая группа справа: пункты меню + переключатели языка/темы + бургер. */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.brand__mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.brand__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand:hover .brand__mark {
+  border-color: var(--accent-1);
+  transform: rotate(-6deg);
+}
+
+.brand__name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  font-family: "Aboreto", "Manrope", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-size: clamp(1.05rem, 0.85rem + 1vw, 1.4rem);
+}
+
+/* На совсем узких экранах текстовый логотип уступает место контролам,
+   остаётся только медальон — так шапка никогда не вылезает за экран. */
+@media (max-width: 420px) {
+  .brand__name {
+    display: none;
+  }
+}
+
+.brand__name strong {
+  font-weight: 400;
+}
+
+.brand__name span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Primary nav (desktop) ---------- */
+.nav-links {
+  display: none;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (min-width: 860px) {
+  .nav-links {
+    display: flex;
+  }
+}
+
+.nav-link {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 1.08rem;
+  color: var(--text-primary);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  background: var(--gradient-brand);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: var(--nav-glow);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  flex-shrink: 0;
+}
+
+/* ---------- Mobile nav toggle + panel ---------- */
+/* Специфичность .header-controls .nav-toggle нужна, чтобы правило
+   гарантированно перебивало .icon-btn{display:inline-flex} из
+   components.css, который подключается после layout.css. */
+.header-controls .nav-toggle {
+  display: inline-flex;
+}
+
+@media (min-width: 860px) {
+  .header-controls .nav-toggle {
+    display: none;
+  }
+}
+
+.mobile-nav-panel {
+  /* position: absolute, чтобы панель не была flex-элементом в одном ряду
+     с .site-header__inner (у .site-header фиксированная высота и
+     display:flex — без absolute список сплющивался бы в углу шапки). */
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--gap-sm);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+}
+
+.mobile-nav-panel[data-open="true"] {
+  display: flex;
+}
+
+@media (min-width: 860px) {
+  .mobile-nav-panel {
+    display: none !important;
+  }
+}
+
+.mobile-nav-panel .nav-link {
+  width: 100%;
+  text-align: left;
+  border-radius: var(--radius-sm);
+}
+
+.mobile-nav-panel .nav-link:hover {
+  transform: none;
+}
+
+/* ---------- Hero: відео, що прокручується разом зі скролом ---------- */
+/* .hero розтягнутий вище за екран (300vh) — це запас прокрутки: 100vh
+   лишається під видиму частину (.hero__pin, sticky), а решта ~200vh
+   (приблизно 2 екрани) — саме той "простір", у межах якого прокручується
+   відео кадр за кадром (js/main.js, initHeroVideoScrub): позиція скролу
+   всередині hero напряму керує video.currentTime, тому ~2 прокрутки
+   вниз відповідають повній довжині відео (від старту до кінця, коли
+   камера опускається в туман). Коли запас висоти скінчився, .hero__pin
+   відліплюється, і сторінка плавно переходить до секції з екскурсіями
+   (той самий hero__wave-перехід). */
+.hero {
+  position: relative;
+  height: 300vh;
+  isolation: isolate;
+}
+
+.hero__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* 86px хвилі знизу + запас, щоб кнопки й текст гарантовано були над нею */
+  padding-bottom: calc(86px + var(--gap-lg));
+  color: #fff;
+}
+
+.hero__scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--gradient-brand);
+}
+
+/* Hero "відео" реалізовано як послідовність кадрів (assets/videos/frames/),
+   що малюються на <canvas> — js/main.js (initHeroFrameScrub) підбирає
+   потрібний кадр за прогресом скролу і малює його напряму, без
+   video.currentTime: перемотка справжнього відеофайлу під час скролу
+   виявилась нестабільною (браузер періодично "затримує" декодування
+   кадру, це і виглядало як лаги/ривки), а малювання вже готового
+   растрового кадру на canvas — миттєве і завжди плавне.
+   <img data-hero-poster> — перший кадр як просте зображення: видно одразу
+   (без чекання на JS), canvas малюється поверх нього щойно кадри
+   почали завантажуватись. Якщо JS вимкнено або спрацював
+   prefers-reduced-motion — просто лишається цей постер. */
+.hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Затемнення поверх сцени: зверху темніше (під кнопками шапки), знизу —
+   під текстом hero. */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(180deg, rgba(5, 14, 28, 0.6) 0%, rgba(5, 14, 28, 0.05) 28%, rgba(5, 14, 28, 0.1) 55%, rgba(5, 14, 28, 0.5) 100%);
+}
+
+/* Хвиля внизу hero: замість жорсткого зрізу фото об секцію нижче —
+   вирізаний фігурний край, залитий кольором фону сторінки (var(--bg-body),
+   тому сама адаптується під світлу/темну тему). Лежить поверх фото і
+   тексту не заважає — .hero__inner / .hero__scroll-hint вище по z-index. */
+.hero__wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 86px;
+  z-index: 6;
+  display: block;
+  overflow: visible;
+}
+
+.hero__wave path {
+  fill: var(--bg-body);
+  transition: fill var(--transition-base);
+  /* Розмиває контур хвилі — замість чіткого фігурного зрізу межа між
+     фото й фоном сторінки виходить м'якою, "туманною". Розмиття
+     трохи виходить за межі самого path (звідси overflow: visible на
+     батьківському svg), інакше верхній край плями обрізався б рівною
+     лінією і ефект був би непомітний. */
+  filter: blur(18px);
+}
+
+/* Маленька підказка «прокрути вниз» унизу hero. Лежить над хвилею. */
+.hero__scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(86px + var(--gap-sm));
+  transform: translateX(-50%);
+  z-index: 7;
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-pill);
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.hero__scroll-hint span {
+  width: 4px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  animation: scroll-hint-bounce 1.6s ease-in-out infinite;
+}
+
+@media (max-width: 640px) {
+  .hero { height: 260vh; }
+  .hero__wave { height: 48px; }
+  .hero__scroll-hint { display: none; }
+  .hero__pin { padding-bottom: calc(48px + var(--gap-md)); }
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Заголовок hero — Great Vibes (рукописний), відмінний від Manrope решти
+   сайту. Захостили шрифт самі (css/base.css, @font-face) — у Google Fonts
+   CDN версія цього шрифту без кирилиці, хоча сам шрифт (файл з офіційного
+   репозиторію) українські літери підтримує. */
+.hero__inner h1 {
+  font-family: "Great Vibes", cursive;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.01em;
+  /* рукописний шрифт вищий і тонший — трохи збільшуємо розмір і міжрядковий
+     інтервал, щоб виглядало пропорційно */
+  font-size: clamp(2.6rem, 1.8rem + 3.4vw, 4.6rem);
+  line-height: 1.25;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hero__lead {
+  max-width: 60ch;
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+
+/* ---------- Sections ---------- */
+.section {
+  padding: var(--gap-xl) 0;
+  scroll-margin-top: var(--header-height);
+}
+
+.section--alt {
+  background: var(--bg-surface-alt);
+}
+
+.section__head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: var(--gap-lg);
+  max-width: 70ch;
+}
+
+.section__head--center {
+  margin-inline: auto;
+  text-align: center;
+  align-items: center;
+}
+
+/* Заголовок секції галереї — тим самим рукописним шрифтом, що й назви
+   категорій на смужках (Marck Script, самохоститься в css/base.css). */
+#gallery .section__head h2 {
+  font-family: "Marck Script", var(--font-display), cursive;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 1.7rem + 2vw, 3.2rem);
+}
+
+/* Фон секції тепер завжди затемнене фото (не залежить від теми) — тож і
+   заголовок з підписом над ним завжди світлі, в обох темах, інакше в
+   світлій темі темний текст губився б на темному фоні. */
+#gallery .section__head h2,
+#gallery .section__head p {
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(5, 14, 28, 0.35);
+}
+
+/* ---------- Excursions grid ---------- */
+.excursions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-md);
+}
+
+@media (min-width: 640px) {
+  .excursions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .excursions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---------- Gallery: розкривні смужки-категорії ---------- */
+.gallery-strips {
+  display: flex;
+  gap: var(--gap-xs);
+  height: 420px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.gallery-strip {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background-color: var(--skeleton-bg);
+  /* background-image задається інлайн через JS (js/render.js) — див.
+     коментар там про те, чому не через CSS custom property. */
+  /* background-size рахує і фіксує в px js/render.js (fitStripBackground),
+     одразу як фото завантажиться, — під конкретні пропорції ЦЬОГО фото і
+     розмір РОЗКРИТОЇ смужки. Це навмисно НЕ "cover": cover перераховує
+     масштаб під поточну (проміжну) ширину блока під час анімації, тож
+     картинка на очах "зумиться" — і що більше пропорції фото відрізняються
+     від розкритого блока, то помітніше (найяскравіше це було видно на
+     Лондоні, бо в нього пропорції 4:3, а не "широкі" як в решти). Значення
+     нижче — лише запасний варіант на випадок, поки JS ще не порахував
+     точний розмір (наприклад, для фото, яке ще вантажиться). */
+  background-size: cover;
+  background-position: center;
+  /* Розкриття активної смужки — плавний "гармошка"-перехід ширини,
+     як у відео-референсі, через flex-grow (без зміни базового flex-basis). */
+  transition: flex-grow 600ms cubic-bezier(0.05, 0.61, 0.41, 0.95);
+}
+
+.gallery-strip:hover {
+  flex-grow: 1.6;
+}
+
+.gallery-strip.is-active,
+.gallery-strip.is-active:hover {
+  flex-grow: 7;
+}
+
+.gallery-strip__shadow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5, 14, 28, 0.78) 0%, rgba(5, 14, 28, 0.2) 45%, transparent 72%);
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}
+
+.gallery-strip.is-active .gallery-strip__shadow {
+  opacity: 1;
+}
+
+/* Іконка категорії (зараз — прапор-емодзі, див. коментар у
+   js/gallery-data.js) — маленький бейдж у нижньому лівому куті смужки.
+   Лишається видимим завжди, і на розкритій, і на стиснутій смужці, щоб
+   категорію можна було впізнати навіть у вузькому стані. */
+.gallery-strip__icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(5, 14, 28, 0.55);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.gallery-strip__meta {
+  position: absolute;
+  left: var(--gap-sm);
+  right: var(--gap-sm);
+  bottom: var(--gap-sm);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gallery-strip__label {
+  color: #ffffff;
+  font-family: "Marck Script", var(--font-display), cursive;
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.15;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 10px rgba(5, 14, 28, 0.5);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 500ms ease-out 100ms, transform 500ms ease-out 100ms;
+}
+
+.gallery-strip.is-active .gallery-strip__label {
+  opacity: 1;
+  transform: translateY(0);
+  white-space: normal;
+}
+
+@media (max-width: 767px) {
+  /* На вузьких екранах ряд з 6 смужок в ширину не поміщається —
+     перебудовуємо той самий принцип у вертикальний акордеон. */
+  .gallery-strips {
+    flex-direction: column;
+    height: auto;
+  }
+  .gallery-strip {
+    flex: none;
+    height: 60px;
+    transition: height 600ms cubic-bezier(0.05, 0.61, 0.41, 0.95);
+  }
+  .gallery-strip:hover {
+    height: 60px;
+  }
+  .gallery-strip.is-active,
+  .gallery-strip.is-active:hover {
+    height: 320px;
+  }
+}
+
+/* ---------- Gallery: розмитий фон під обкладинку активної категорії ---------- */
+#gallery {
+  position: relative;
+  overflow: hidden;
+  /* Трохи більше за стандартний відступ секції, щоб хвилі (86px) не
+     наїжджали на заголовок вгорі й на карусель внизу. */
+  padding-top: calc(var(--gap-xl) + 30px);
+  padding-bottom: calc(var(--gap-xl) + 30px);
+}
+
+#gallery .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Хвилі вгорі й внизу секції галереї — той самий прийом, що й .hero__wave:
+   залиті кольором фону сторінки (var(--bg-body)), тому плавно "переходять"
+   із сусідніх секцій (обидві мають той самий колір фону). Вгорі — та сама
+   форма, дзеркально перевернута. */
+.gallery__wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 86px;
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+}
+
+.gallery__wave path {
+  fill: var(--bg-body);
+  transition: fill var(--transition-base);
+}
+
+.gallery__wave--top {
+  top: -1px;
+  transform: scaleY(-1);
+}
+
+.gallery__wave--bottom {
+  bottom: -1px;
+}
+
+@media (max-width: 640px) {
+  .gallery__wave { height: 48px; }
+}
+
+.gallery-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gallery-backdrop__layer {
+  position: absolute;
+  /* трохи більше за контейнер, щоб розмиття не оголювало прозорий край */
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  /* Менше розмиття, ніж було: фото має лишатись впізнаваним ("видно, але
+     затемнено"), а не перетворюватись на абстрактну кольорову пляму. */
+  filter: blur(14px) saturate(1.1);
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.gallery-backdrop__layer.is-visible {
+  opacity: 0.95;
+}
+
+/* Затемнення поверх фото — навмисно темне (а не колір теми): робить фото
+   саме "затемненим", а не "розбіленим" в світлій темі, і однаково виглядає
+   в обох темах. Текст заголовка секції під це затемнення нижче зроблено
+   завжди світлим (див. #gallery .section__head). */
+.gallery-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 14, 28, 0.6);
+}
+
+/* ---------- Gallery: карусель інших фото активної категорії ---------- */
+.gallery-carousel {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  margin-top: var(--gap-md);
+}
+
+.gallery-carousel--single-page .gallery-carousel__arrow {
+  visibility: hidden;
+}
+
+.gallery-carousel__viewport {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.gallery-carousel__track {
+  display: flex;
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-carousel__page {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap-sm);
+}
+
+@media (min-width: 640px) {
+  .gallery-carousel__page { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .gallery-carousel__page { grid-template-columns: repeat(6, 1fr); }
+}
+
+.gallery-carousel__arrow {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.gallery-carousel__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.gallery-carousel__arrow:hover {
+  background: var(--accent-1);
+  color: var(--text-on-accent);
+  transform: scale(1.06);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  padding: var(--gap-lg) 0;
+}
+
+.footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-lg);
+  text-align: center;
+}
+
+.footer__brand {
+  order: 2;
+}
+
+.footer__social {
+  order: 1;
+}
+
+/* ---------- Footer social icons ----------
+   Ефект "розкладеного віяла": іконка при наведенні трохи повертається,
+   а три декоративні квадрати-примари позаду неї розходяться врізнобіч,
+   ніби карти в стосі. Колір бренду задається через --icon-color
+   інлайн-стилем на самому <a> у index.html (простіше додавати нові
+   іконки, не чіпаючи CSS). */
+.footer__social {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap-xl);
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .footer__social {
+    gap: 64px;
+    flex-wrap: nowrap;
+  }
+}
+
+.social-icon {
+  --icon-color: var(--accent-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-xs);
+  width: 96px;
+  text-decoration: none;
+  color: var(--text-body);
+}
+
+.social-icon__layer {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.social-icon__deco {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--icon-color);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.social-icon__deco:nth-child(1) { transition-delay: 0s; }
+.social-icon__deco:nth-child(2) { transition-delay: 0.02s; }
+.social-icon__deco:nth-child(3) { transition-delay: 0.04s; }
+
+.social-icon__layer svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 13px;
+  border: 1.5px solid var(--icon-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  color: var(--icon-color);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-base), border-color var(--transition-base), color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+}
+
+.social-icon__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--icon-color);
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+  text-align: center;
+  line-height: 1.25;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.social-icon:hover .social-icon__layer svg,
+.social-icon:focus-visible .social-icon__layer svg {
+  transform: rotate(-10deg) skew(6deg);
+  background: var(--icon-color);
+  color: var(--bg-surface, #fff);
+  box-shadow: var(--shadow-lg, var(--shadow-md));
+}
+
+.social-icon:hover .social-icon__deco,
+.social-icon:focus-visible .social-icon__deco {
+  opacity: 0.5;
+}
+
+.social-icon:hover .social-icon__deco:nth-child(1),
+.social-icon:focus-visible .social-icon__deco:nth-child(1) {
+  opacity: 0.25;
+  transform: translate(4px, -4px) rotate(-5deg);
+}
+
+.social-icon:hover .social-icon__deco:nth-child(2),
+.social-icon:focus-visible .social-icon__deco:nth-child(2) {
+  opacity: 0.45;
+  transform: translate(8px, -8px) rotate(-8deg);
+}
+
+.social-icon:hover .social-icon__deco:nth-child(3),
+.social-icon:focus-visible .social-icon__deco:nth-child(3) {
+  opacity: 0.65;
+  transform: translate(12px, -12px) rotate(-11deg);
+}
+
+.social-icon:hover .social-icon__label,
+.social-icon:focus-visible .social-icon__label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Utility layout ---------- */
+.flex-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  flex-wrap: wrap;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+@media (min-width: 768px) {
+  .hero__inner {
+    max-width: 62%;
+  }
+}
